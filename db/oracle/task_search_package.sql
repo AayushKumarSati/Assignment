@@ -46,12 +46,14 @@ CREATE OR REPLACE PACKAGE BODY task_search_pkg AS
         v_offset := (p_page - 1) * p_page_size;
 
         -- Total count for pagination metadata
+                -- FIX: Count only active tasks matching search and status.
+
         SELECT COUNT(*)
           INTO p_total_count
           FROM tasks
          WHERE archived = 0
-           AND LOWER(title) LIKE v_term
-            OR LOWER(description) LIKE v_term
+           AND (LOWER(title) LIKE v_term
+            OR LOWER(description) LIKE v_term)
            AND (p_status IS NULL OR status = p_status);
 
         -- Paginated results using ROWNUM (pre-12c pattern)

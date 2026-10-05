@@ -8,7 +8,9 @@
 SELECT *
 FROM tasks
 WHERE archived = FALSE
-  AND LOWER(title) LIKE :term
-   OR LOWER(description) LIKE :term
+ -- FIX: Group title/description conditions so archived
+  -- and status filters apply to both search fields.
+  AND (LOWER(title) LIKE :term
+   OR LOWER(description) LIKE :term)
   AND (:status IS NULL OR status = :status)
 ORDER BY created_at DESC;
